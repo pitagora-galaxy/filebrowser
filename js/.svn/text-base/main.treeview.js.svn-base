@@ -1,0 +1,116 @@
+
+var textTree = "";
+var runDir = null;
+var alignDir = null;
+
+$(function() {
+	
+	getTree();
+	getMachineList();
+	
+	// EVENT: FILTER
+	$("input#submitFilter").click(function(){
+		getTree();
+	});
+	
+	$("div.menu3_c *").change(function(){
+		getTree();
+	});
+	
+	// EVENT: MAKE LINK FOR GALAXY
+	$("input#submitGalaxy").click(function(){
+		
+		if (runDir != null) {
+			linkGalaxy();
+		} else {
+			printImp("Choose Align Directory");
+		}
+	});
+	
+});
+
+function getTree(){
+	clearTree();
+	$.ajax({
+		url: "search_tree.php?"
+			+ "machine="      + $('select#machine option:selected').attr("value")
+			+ "&sample_name="  + $('input#sample_name').attr("value")
+			+ "&researcher="   + $('input#researcher').attr("value")
+			+ "&file_name="    + $('input#file_name').attr("value")
+			,
+		dataType: "json",
+		success: function(result){
+			
+			// 1ST DEPTH: RUN DIR
+			for(var i=0; i<result.length; i++){
+				addTree("<li>");
+				addTree("<span class=\"folder\""
+						+ " run_id=\"" + result[i].run_id + "\""
+						+ " run_dir=\"" + result[i].run_dir + "\""
+						+ ">" + result[i].run_dir + "</span>");
+				
+				// 2ND DEPTH: ALIGN DIR
+				addTree("<ul>");
+				for(var j=0; j<result[i].align.length; j++){
+   					addTree("<li>");
+   					addTree("<span class=\"folder\""
+   							+ " align_id=\"" + result[i].align[j].align_id + "\""
+   							+ " align_dir=\"" + result[i].align[j].align_dir + "\""
+   							+ " run_dir=\"" + result[i].align[j].run_dir + "\""
+   							+ ">" + result[i].align[j].align_dir + "</span>");
+   					
+   					// 3RD DEPTH: FILE
+   					// TBDTBDTBDTBDTBDTBDTBDTBDTBDTBDTBD
+   					
+   					addTree("</li>");
+   	   			}
+   				addTree("</ul>");
+   				addTree("</li>");
+   			}
+			
+			// PRINT TREE
+			printTree();
+			
+			// --- EVENTS ---
+			
+			// CLICK RUN DIR
+			$("#tree li span").click(function(){
+				
+				// SET GLOBAL VARIABLES
+				runDir = $(this).attr("run_id");
+				alignDir = null;
+				
+				// SHOW RUN INFO
+				info("run", $(this).attr("run_id"));
+			})
+			
+			// CLICK ALIGN DIR
+			$("#tree li ul li span").click(function(){
+				
+				// SET GLOBAL VARIABLES
+				runDir = $(this).attr("run_dir");
+				alignDir = $(this).attr("align_dir");
+				
+				// SHOW ALIGN INFO
+				info("align", $(this).attr("align_id"));
+				
+				// SHOW IMPORT BUTTON
+				printImp(runDir + "/" + alignDir);
+			})
+		}
+	});
+}
+
+function addTree(text){
+	textTree = textTree.concat(text);
+}
+
+function printTree() {
+	$("#tree").append(textTree);
+	$("#tree").treeview({ animated : 100, collapsed : true });
+}
+
+function clearTree() {
+	textTree = "";
+	$("#tree").html("");
+}

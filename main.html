@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Local File Browser</title>
+
+<script type="text/javascript" src="./js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="./js/jquery.cookie.js"></script>
+<script type="text/javascript" src="./js/main.onload.js"></script>
+<script type="text/javascript" src="./js/main.function.js"></script>
+<script type="text/javascript" src="./js/main.custom.js"></script>
+
+<link rel="stylesheet" href="./main.css" type="text/css" />
+
+</head>
+<body>
+<div id="titlebar">
+	<div id="titlebar_title">
+		Local File Browser (version 0.3)
+	</div>
+	<div id="titlebar_admin">
+		<a id="titlebar_admin" href="./message.php">Admin</a>
+	</div>
+	<div id="titlebar_log">
+		<a id="titlebar_log">Log</a>
+	</div>
+</div>
+<div>
+	<table id="table">
+		<thead>
+			<!-- Replaced by JavaScript -->
+		</thead>
+		<tbody>
+			<!-- Replaced by JavaScript -->
+		</tbody>
+	</table>
+</div>
+
+<div id="floatWindow" class="floatWindow">
+	<a href="" class="close">close</a>
+	<dl>
+		<dt>Details</dt>
+		<dd id="textInfo"></dd>
+	</dl>
+</div>
+
+<div id="windowLog" class="floatWindow">
+	<a href="" class="close">close</a>
+	<dl>
+		<dt>Log</dt>
+		<dd><div id="log"></div></dd>
+	</dl>
+</div>
+
+</body>
+</html>

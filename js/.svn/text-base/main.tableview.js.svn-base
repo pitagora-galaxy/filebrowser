@@ -1,0 +1,159 @@
+
+
+var textTable = "";
+var runDir = null;
+var alignDir = null;
+
+$(function() {
+	
+	getTable();
+	getCandidate("organism");
+	
+	// EVENT: FILTER
+	$("input#submitFilter").click(function(){
+		getTable();
+	});
+	
+	$("#table thead tr td *").change(function(){
+		getTable();
+	});
+	
+	// EVENT: MAKE LINK FOR GALAXY
+	$("input#submitGalaxy").click(function(){
+		
+		if (runDir != null) {
+			linkGalaxy();
+		} else {
+			printImp("Choose Align Directory");
+		}
+	});	
+});
+
+function getTable(){
+	clearTable();
+	$.ajax({
+		url: "search_table.php?"
+				+ "sample_name="  + $('input#sample_name').attr("value")
+				+ "&organism="    + $('select#organism option:selected').attr("value")
+				+ "&researcher="  + $('input#researcher').attr("value")
+				+ "&file_name="   + $('input#file_name').attr("value")
+				,
+		dataType: "json",
+		success: function(result){
+			
+			/* TABLE CELLS
+			 * 
+			 * Cells need to hold their IDs and values to be shown.
+			 * Types define the info to be shown when clicked.
+			 */
+			
+			
+			var pre_run_date = null;
+			var pre_lane_no = null;
+			
+			for(var i=0; i<result.length; i++){
+				addTable("<tr>");
+				// RUN DATE
+				if (result[i].run_date != pre_run_date || result[i].lane_no < pre_lane_no) {
+					addTable("<td type=\"run\""
+							+ " run_id=\"" + result[i].run_id + "\""
+							+ ">" + result[i].run_date + "</td>");
+				}
+				else {
+					addTable("<td></td>")
+				}
+				pre_run_date = result[i].run_date;
+				pre_lane_no = result[i].lane_no;
+				
+				// LANE NO
+				addTable("<td type=\"lane\""
+						+ " lane_id=\"" + result[i].lane_id + "\""
+						+ ">" + result[i].lane_no + "</td>");
+				// SAMPLE NAME
+				addTable("<td type=\"lane\""
+						+ " lane_id=\"" + result[i].lane_id + "\""
+						+ ">" + result[i].sample_name + "</td>");
+				// ORGANISM
+				addTable("<td type=\"lane\""
+						+ " lane_id=\"" + result[i].lane_id + "\""
+						+ ">" + result[i].organism + "</td>");
+				// RESEARCHER
+				addTable("<td type=\"lane\""
+						+ " lane_id=\"" + result[i].lane_id + "\""
+						+ ">" + result[i].researcher + "</td>");
+				// ALIGN DATE
+				addTable("<td type=\"align\""
+						+ " align_id=\"" + result[i].align_id + "\""
+						+ ">" + result[i].align_date + "</td>");
+				// FILE NAME
+				addTable("<td type=\"file\""
+						+ " file_id=\"" + result[i].file_id + "\""
+						+ ">" + result[i].file_name + "</td>");
+				addTable("</tr>");
+			}
+			
+			// PRINT TABLE
+			printTable();
+			
+			
+			// EVENT CLICK
+			$("#table tbody tr td").click(function(e){
+				
+				// COLOR
+				$("#table tr td").css("color", "");
+				$(this).css("color", "red");
+				
+				// CLEAR IMP BUTTON
+				clearImp();
+				
+				$("#floatWindow").fadeOut("fast");
+				$("#floatWindow").css({top:e.pageY+10,left:e.pageX});
+				$("#floatWindow").fadeIn("fast");
+				
+				// RUN
+				if ($(this).attr("type") == "run"){
+					info("run", $(this).attr("run_id"));
+				}
+				// ALIGN
+				else if ($(this).attr("type") == "align"){
+					info("align", $(this).attr("align_id"));
+					
+					// SHOW IMPORT BUTTON
+					printImp("<input type=\"submit\" value=\"Import\" id=\"submitGalaxy\" />");
+				}
+				// LANE
+				else if ($(this).attr("type") == "lane"){
+					info("lane", $(this).attr("lane_id"));
+				}
+				// FILE
+				else if ($(this).attr("type") == "file"){
+					info("file", $(this).attr("file_id"));
+					
+					// SHOW IMPORT BUTTON
+					printImp("<input type=\"submit\" value=\"Import\" id=\"submitGalaxy\" />");
+				}
+			})
+			/*
+			.mouseup(function(){
+				$("#floatWindow").fadeOut("fast");
+			});
+			*/
+			
+		}
+	});
+}
+
+
+
+function addTable(text){
+	textTable = textTable.concat(text);
+}
+
+function printTable() {
+	$("#table tbody").html(textTable);
+}
+
+function clearTable() {
+	textTable = "";
+	$("#table tbody").html("");
+}

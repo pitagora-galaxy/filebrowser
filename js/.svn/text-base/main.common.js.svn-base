@@ -1,0 +1,90 @@
+
+// GET AND DISPLAY INFO
+function info(mode, id) {
+	
+	// CLEAR
+	clearInfo();
+	
+	$.ajax({
+		url: "info.php?mode=" + mode + "&id=" + id,
+		dataType: "json",
+		success: function(result){
+			
+			// PRINT ALL CONTENTS
+			for(var i=0; i<result.length; i++) {
+				printInfo(result[i].title, result[i].content);
+			}	
+		}
+	});
+}
+
+function getCandidate(attr){
+	$.ajax({
+		url: "candidate.php?mode=" + attr,
+		dataType: "json",
+		success: function(result){
+			for(var i=0; i<result.length; i++){
+				$('select#organism').append("<option value=\"" + result[i].name + "\">" + result[i].name + "</option>");
+			}
+		}
+	});
+}
+
+// MAKE SYMBOLIC LINK IN GALAXY UPLOAD DIRECTORY
+function linkGalaxy() {
+	
+	$.ajax({
+		url: "galaxy.php?run_dir=" + runDir + "&align_dir=" + alignDir,
+		dataType: "text",
+		success: function(result){
+			if (result == 1){
+				printImp("Success!");
+			} else {
+				printImp("Failed!");
+			}
+		}
+	});
+}
+
+function printImp(text) {
+	$("#textImp").html(text);
+}
+function clearImp() {
+	$("#textImp").html("");
+}
+
+function printInfo(title, content) {
+	$("#textInfo").append(
+			  "<div class=\"menu2_c\">"
+			+ "<div class=\"menu3_t\">" + title + "</div>"
+			+ "<div class=\"menu3_c\">" + content + "</div>"
+			+ "</div>");
+}
+
+function clearInfo() {
+	$("#textInfo").html("");
+}
+
+// FLOATING WINDOW
+
+$(function(){
+	$("#floatWindow a.close").click(function(){
+		$("#floatWindow").fadeOut("fast");
+		return false;
+	});
+	$("#floatWindow dl dt").mousedown(function(e){
+		
+		$("#floatWindow")
+			.data("clickPointX" , e.pageX - $("#floatWindow").offset().left)
+			.data("clickPointY" , e.pageY - $("#floatWindow").offset().top);
+		
+		$(document).mousemove(function(e){
+			$("#floatWindow").css({
+				top:e.pageY  - $("#floatWindow").data("clickPointY")+"px",
+				left:e.pageX - $("#floatWindow").data("clickPointX")+"px"
+			});
+		});
+	}).mouseup(function(){
+		$(document).unbind("mousemove");
+	});
+});
