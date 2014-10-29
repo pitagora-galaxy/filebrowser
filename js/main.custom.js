@@ -76,9 +76,9 @@ function buildText(result){
 				+ '<FORM ACTION="' + galaxy_url + '" METHOD=POST>'
 				+ '<INPUT TYPE=HIDDEN NAME="tool_id" VALUE="' + tool_id + '">'
 				+ '<INPUT TYPE=HIDDEN NAME="db" VALUE="' + result[i].ref_genome + '">'
-				+ '<INPUT TYPE=HIDDEN NAME="data_type" VALUE="eland_export">'
+				+ '<INPUT TYPE=HIDDEN NAME="data_type" VALUE="">'
 				+ '<INPUT TYPE=HIDDEN NAME="name" VALUE="' + result[i].sample_name + ': ' + result[i].file_name + '">'
-				+ '<INPUT TYPE=HIDDEN NAME="path" VALUE="/data/solexa_data/run_result' + result[i].path + '">'
+				+ '<INPUT TYPE=HIDDEN NAME="path" VALUE="' + result[i].path + '">'
 				+ '<input type="submit" value="Import" id="" />'
 				+ '</FORM>'
 				+ '</td>');
