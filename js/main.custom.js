@@ -78,7 +78,7 @@ function buildText(result){
 				+ '<INPUT TYPE=HIDDEN NAME="db" VALUE="' + result[i].ref_genome + '">'
 				+ '<INPUT TYPE=HIDDEN NAME="data_type" VALUE="">'
 				+ '<INPUT TYPE=HIDDEN NAME="name" VALUE="' + result[i].sample_name + ': ' + result[i].file_name + '">'
-				+ '<INPUT TYPE=HIDDEN NAME="path" VALUE="' + result[i].path + '">'
+				+ '<INPUT TYPE=HIDDEN NAME="path" VALUE="' + result[i].path + '/' + result[i].file_name + '">'
 				+ '<input type="submit" value="Import" id="" />'
 				+ '</FORM>'
 				+ '</td>');
